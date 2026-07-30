@@ -31,6 +31,7 @@ export interface ApiRequestOptions
   query?: QueryParams;
   body?: unknown;
   accessToken?: string | null;
+  handleAuthenticationError?: boolean;
 }
 
 type UnknownRecord = Record<string, unknown>;
@@ -153,6 +154,7 @@ export class ApiClientError extends Error {
   readonly code: string;
   readonly path?: string;
   readonly timestamp?: string;
+  readonly requestId?: string;
   readonly fieldErrors: FieldErrors;
   readonly payload?: unknown;
 
@@ -167,9 +169,26 @@ export class ApiClientError extends Error {
     this.code = error.code;
     this.path = error.path;
     this.timestamp = error.timestamp;
+    this.requestId = error.requestId;
     this.fieldErrors = error.fieldErrors;
     this.payload = payload;
   }
+}
+
+export type AuthenticationErrorHandler = (
+  error: ApiClientError,
+) => void;
+
+let authenticationErrorHandler: AuthenticationErrorHandler | undefined;
+
+/**
+ * Lets the client-side authentication boundary respond consistently to 401
+ * responses without coupling the shared HTTP client to a feature store.
+ */
+export function setAuthenticationErrorHandler(
+  handler: AuthenticationErrorHandler | undefined,
+): void {
+  authenticationErrorHandler = handler;
 }
 
 function createApiClientError(
@@ -192,9 +211,11 @@ function createApiClientError(
         ?? "Đã xảy ra lỗi khi gọi API.",
       path: getString(objectPayload.path),
       timestamp: getString(objectPayload.timestamp),
+      requestId: getString(objectPayload.requestId),
       fieldErrors: normalizeFieldErrors(
         objectPayload.fieldErrors
-        ?? objectPayload.errors,
+        ?? objectPayload.errors
+        ?? objectPayload.violations,
       ),
     },
     payload,
@@ -210,6 +231,7 @@ async function request<T>(
     query,
     body,
     accessToken,
+    handleAuthenticationError = true,
     headers: customHeaders,
     ...requestInit
   } = options;
@@ -243,7 +265,13 @@ async function request<T>(
   const payload = await parseResponseBody(response);
 
   if (!response.ok) {
-    throw createApiClientError(response, payload);
+    const error = createApiClientError(response, payload);
+
+    if (error.status === 401 && handleAuthenticationError) {
+      authenticationErrorHandler?.(error);
+    }
+
+    throw error;
   }
 
   return payload as T;

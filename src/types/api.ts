@@ -6,6 +6,7 @@ export interface ApiErrorResponse {
   message: string;
   path?: string;
   timestamp?: string;
+  requestId?: string;
   fieldErrors: FieldErrors;
 }
 

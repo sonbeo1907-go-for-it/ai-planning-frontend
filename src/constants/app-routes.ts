@@ -1,6 +1,7 @@
 export const APP_ROUTES = {
   HOME: "/",
   LOGIN: "/login",
+  PROFILE: "/profile",
   FORBIDDEN: "/forbidden",
   STUDENT: {
     DASHBOARD: "/student/dashboard",
@@ -12,6 +13,7 @@ export const APP_ROUTES = {
     PLAN_REVIEWS: "/instructor/plan-reviews",
   },
   ADMIN: {
+    DASHBOARD: "/admin/dashboard",
     USERS: "/admin/users",
     CLASSES: "/admin/classes",
     COURSES: "/admin/courses",
