@@ -34,6 +34,7 @@ import {
   Skeleton,
   StatusBadge,
 } from "@/components/ui";
+import { UserManagementDemoPage } from "./UserManagementDemoPage";
 
 function ComponentSection({
   title,
@@ -194,6 +195,9 @@ export function ComponentTestPage() {
                   action={<Button variant="ghost">Xem chi tiết</Button>}
                 />
               </div>
+            </ComponentSection>
+            <ComponentSection title="User Management Sandbox (US-ADM-01 - Standalone / No Backend Required)">
+              <UserManagementDemoPage />
             </ComponentSection>
           </div>
         </MainContent>
