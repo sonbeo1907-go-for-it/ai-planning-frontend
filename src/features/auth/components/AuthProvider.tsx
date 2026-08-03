@@ -12,6 +12,7 @@ import { APP_ROUTES } from "@/constants/app-routes";
 import { setAuthenticationErrorHandler } from "@/lib/api-client";
 
 import { authApi } from "../auth.api";
+import { connectAccountEvents } from "../account-events";
 import { useAuthStore } from "../auth.store";
 
 export interface AuthProviderProps {
@@ -27,6 +28,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const router = useRouter();
   const pathname = usePathname();
   const initialized = useAuthStore((state) => state.isInitialized);
+  const accessToken = useAuthStore((state) => state.accessToken);
   const initializationStarted = useRef(false);
 
   useEffect(() => {
@@ -80,6 +82,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     void restoreSession();
   }, [initialized]);
+
+  useEffect(() => {
+    if (!accessToken) {
+      return;
+    }
+
+    return connectAccountEvents(accessToken, () => {
+      const returnPath = `${window.location.pathname}${window.location.search}`;
+      useAuthStore.getState().clearSession();
+      toast.error("Tài khoản của bạn đã bị vô hiệu hóa. Vui lòng liên hệ quản trị viên.");
+      router.replace(loginUrl("account-deactivated", returnPath));
+    });
+  }, [accessToken, router]);
 
   return children;
 }

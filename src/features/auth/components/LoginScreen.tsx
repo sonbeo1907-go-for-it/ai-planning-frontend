@@ -35,6 +35,10 @@ function sessionMessage(reason?: string): string | undefined {
     return "Vui lòng đăng nhập để truy cập chức năng này.";
   }
 
+  if (reason === "account-deactivated") {
+    return "Tài khoản của bạn đã bị vô hiệu hóa. Vui lòng liên hệ quản trị viên.";
+  }
+
   return undefined;
 }
 
