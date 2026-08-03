@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AuthenticatedShell } from "@/features/auth";
 import {
   useUsers,
   UserFilterBar,
@@ -11,6 +12,18 @@ import {
 } from "@/features/user";
 
 export default function AdminUsersPage() {
+  return (
+    <AuthenticatedShell
+      allowedRoles={["ADMIN"]}
+      title="Quản lý người dùng"
+      description="Quản lý tài khoản học viên, giảng viên và quản trị viên."
+    >
+      <AdminUsersContent />
+    </AuthenticatedShell>
+  );
+}
+
+function AdminUsersContent() {
   const {
     users,
     pagination,
@@ -48,18 +61,7 @@ export default function AdminUsersPage() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
-      {/* Header Page */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200/80 pb-5">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-            Quản Lý Người Dùng
-          </h1>
-          <p className="text-sm text-slate-500 mt-1">
-            Quản lý tài khoản Học viên, Giảng viên và Quản trị viên theo US-ADM-01.
-          </p>
-        </div>
-      </div>
+    <div className="mx-auto max-w-7xl space-y-6">
 
       {/* Thông báo lỗi nếu có */}
       {error && (

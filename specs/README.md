@@ -4,6 +4,8 @@ Thư mục này lưu quyết định kỹ thuật và hợp đồng của fronte
 
 ## Danh mục
 
+- `authentication-convention.md`: authentication rules for protected routes and API requests.
+
 - `architecture.md`: cấu trúc source và quy tắc phụ thuộc.
 - `api-conventions.md`: quy ước gọi API và xử lý lỗi.
 - `auth.md`: xác thực, phân quyền và bảo vệ route.
