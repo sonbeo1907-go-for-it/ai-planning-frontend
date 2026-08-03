@@ -15,7 +15,7 @@ export const ACCOUNT_STATUSES = [
 export type AccountStatus = (typeof ACCOUNT_STATUSES)[number];
 
 export interface LoginCredentials {
-  username: string;
+  email: string;
   password: string;
 }
 

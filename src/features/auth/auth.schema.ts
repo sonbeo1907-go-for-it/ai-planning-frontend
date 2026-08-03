@@ -1,11 +1,12 @@
 import { z } from "zod";
 
 export const loginSchema = z.object({
-  username: z
+  email: z
     .string()
     .trim()
-    .min(1, "Vui lòng nhập mã người dùng.")
-    .max(100, "Mã người dùng không được quá 100 ký tự."),
+    .min(1, "Vui lòng nhập email.")
+    .email("Email không hợp lệ.")
+    .max(254, "Email không được quá 254 ký tự."),
   password: z
     .string()
     .min(1, "Vui lòng nhập mật khẩu.")

@@ -46,7 +46,7 @@ export function LoginScreen({ reason }: LoginScreenProps) {
   const establishSession = useAuthStore((state) => state.establishSession);
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { username: "", password: "" },
+    defaultValues: { email: "", password: "" },
   });
 
   useEffect(() => {
@@ -71,7 +71,7 @@ export function LoginScreen({ reason }: LoginScreenProps) {
       if (isApiClientError(error)) {
         if (error.code === "VALIDATION_FAILED") {
           Object.entries(error.fieldErrors).forEach(([field, message]) => {
-            if (field === "username" || field === "password") {
+            if (field === "email" || field === "password") {
               form.setError(field, { message });
             }
           });
@@ -79,7 +79,7 @@ export function LoginScreen({ reason }: LoginScreenProps) {
         }
 
         if (error.code === "INVALID_CREDENTIALS") {
-          setSubmissionError("Tên đăng nhập hoặc mật khẩu không đúng.");
+          setSubmissionError("Email hoặc mật khẩu không đúng.");
           return;
         }
       }
@@ -129,11 +129,12 @@ export function LoginScreen({ reason }: LoginScreenProps) {
           onSubmit={form.handleSubmit(handleSubmit)}
         >
           <Input
-            id="username"
-            label="Mã người dùng"
-            autoComplete="username"
-            {...form.register("username")}
-            error={form.formState.errors.username?.message}
+            id="email"
+            label="Email"
+            type="email"
+            autoComplete="email"
+            {...form.register("email")}
+            error={form.formState.errors.email?.message}
           />
           <Input
             id="password"
