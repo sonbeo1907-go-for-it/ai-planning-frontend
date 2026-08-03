@@ -64,7 +64,6 @@ export function UserFormModal({
   });
 
   useEffect(() => {
-    setServerError(null);
     if (user) {
       resetUpdate({
         fullName: user.fullName || "",
@@ -86,12 +85,17 @@ export function UserFormModal({
 
   if (!isOpen) return null;
 
+  const handleClose = () => {
+    setServerError(null);
+    onClose();
+  };
+
   const handleCreate = async (values: CreateUserFormValues) => {
     setSubmitting(true);
     setServerError(null);
     try {
       await onSubmitCreate(values);
-      onClose();
+      handleClose();
     } catch (err) {
       if (err instanceof ApiClientError) {
         setServerError(err.message);
@@ -109,7 +113,7 @@ export function UserFormModal({
     setServerError(null);
     try {
       await onSubmitUpdate(user.id, values);
-      onClose();
+      handleClose();
     } catch (err) {
       if (err instanceof ApiClientError) {
         setServerError(err.message);
@@ -129,7 +133,7 @@ export function UserFormModal({
             {isEditMode ? `Cập nhật người dùng: @${user?.username}` : "Tạo người dùng mới"}
           </h3>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="text-slate-400 hover:text-slate-600 p-1 rounded-lg transition"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -230,7 +234,7 @@ export function UserFormModal({
               <div className="pt-4 flex justify-end gap-3 border-t border-slate-100">
                 <button
                   type="button"
-                  onClick={onClose}
+                  onClick={handleClose}
                   className="px-4 py-2 bg-slate-100 text-slate-700 text-sm font-semibold rounded-lg hover:bg-slate-200 transition"
                 >
                   Hủy
@@ -322,7 +326,7 @@ export function UserFormModal({
               <div className="pt-4 flex justify-end gap-3 border-t border-slate-100">
                 <button
                   type="button"
-                  onClick={onClose}
+                  onClick={handleClose}
                   className="px-4 py-2 bg-slate-100 text-slate-700 text-sm font-semibold rounded-lg hover:bg-slate-200 transition"
                 >
                   Hủy

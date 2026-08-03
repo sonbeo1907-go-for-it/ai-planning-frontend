@@ -52,6 +52,12 @@ function getNavigationItems(role: UserRole) {
         href: APP_ROUTES.ADMIN.USERS,
         label: "Quản lý người dùng",
         icon: <UsersRound className="size-5" />,
+        children: [
+          {
+            href: APP_ROUTES.ADMIN.USERS,
+            label: "Danh sách người dùng",
+          },
+        ],
       }]
       : []),
     {

@@ -52,7 +52,9 @@ export function useUsers(initialParams?: UserSearchParam) {
   }, [params]);
 
   useEffect(() => {
-    fetchUsers();
+    // The request lifecycle intentionally updates loading/data state.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void fetchUsers();
   }, [fetchUsers]);
 
   const handleSearchChange = (keyword: string) => {

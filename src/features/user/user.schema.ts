@@ -17,7 +17,7 @@ export const createUserSchema = z.object({
     .optional()
     .or(z.literal("")),
   role: z.enum(["STUDENT", "INSTRUCTOR", "ADMIN"], {
-    required_error: "Vui lòng chọn vai trò",
+    message: "Vui lòng chọn vai trò",
   }),
 });
 

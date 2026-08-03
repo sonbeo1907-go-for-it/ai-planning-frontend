@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { User } from "@/features/user/user.types";
+import {
+  CreateUserRequest,
+  UpdateUserRequest,
+  User,
+} from "@/features/user/user.types";
 import { UserFilterBar } from "@/features/user/components/UserFilterBar";
 import { UserTable } from "@/features/user/components/UserTable";
 import { UserFormModal } from "@/features/user/components/UserFormModal";
@@ -81,7 +85,7 @@ export function UserManagementDemoPage() {
     last: true,
   };
 
-  const handleCreate = async (payload: any) => {
+  const handleCreate = async (payload: CreateUserRequest) => {
     const newUser: User = {
       id: crypto.randomUUID(),
       username: payload.username,
@@ -94,7 +98,7 @@ export function UserManagementDemoPage() {
     setUsers([newUser, ...users]);
   };
 
-  const handleUpdate = async (id: string, payload: any) => {
+  const handleUpdate = async (id: string, payload: UpdateUserRequest) => {
     setUsers(
       users.map((u) =>
         u.id === id
@@ -130,8 +134,8 @@ export function UserManagementDemoPage() {
       <UserFilterBar
         params={{ keyword, role, status }}
         onSearchChange={setKeyword}
-        onRoleChange={(r) => setRole(r as any)}
-        onStatusChange={(s) => setStatus(s as any)}
+        onRoleChange={(nextRole) => setRole(nextRole ?? "")}
+        onStatusChange={(nextStatus) => setStatus(nextStatus ?? "")}
         onCreateClick={() => {
           setSelectedUser(null);
           setIsFormModalOpen(true);

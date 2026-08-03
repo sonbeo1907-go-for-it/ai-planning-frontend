@@ -1,8 +1,13 @@
 "use client";
 
+import { Key } from "lucide-react";
+import { useState } from "react";
+
 import { User } from "../user.types";
 import { UserRole, AccountStatus } from "@/features/auth/auth.types";
+import { useAuthStore } from "@/features/auth";
 import { PageResponse } from "@/types/pagination";
+import { ResetPasswordModal } from "./ResetPasswordModal";
 
 interface UserTableProps {
   users: User[];
@@ -51,6 +56,9 @@ export function UserTable({
   onEdit,
   onDeactivate,
 }: UserTableProps) {
+  const profile = useAuthStore((state) => state.profile);
+  const [resetUser, setResetUser] = useState<User | null>(null);
+
   if (loading && users.length === 0) {
     return (
       <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-12 text-center">
@@ -73,6 +81,7 @@ export function UserTable({
   }
 
   return (
+    <>
     <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
@@ -135,6 +144,15 @@ export function UserTable({
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                         </svg>
                       </button>
+                      {profile?.role === "ADMIN" && (
+                        <button
+                          onClick={() => setResetUser(user)}
+                          className="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition"
+                          title="Đặt lại mật khẩu"
+                        >
+                          <Key className="size-4" />
+                        </button>
+                      )}
                       {user.status === "ACTIVE" && (
                         <button
                           onClick={() => onDeactivate(user)}
@@ -181,5 +199,17 @@ export function UserTable({
         </div>
       </div>
     </div>
+
+    <ResetPasswordModal
+      isOpen={resetUser !== null}
+      onClose={() => setResetUser(null)}
+      user={resetUser ? {
+        id: resetUser.id,
+        name: resetUser.fullName,
+        email: resetUser.email,
+        status: resetUser.status,
+      } : null}
+    />
+    </>
   );
 }
