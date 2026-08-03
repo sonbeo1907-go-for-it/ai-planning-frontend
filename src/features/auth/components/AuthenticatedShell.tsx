@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   LogOut,
   UserRound,
+  Users,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -44,6 +45,19 @@ function getNavigationItems(role: UserRole) {
         href: APP_ROUTES.STUDENT.WEEKLY_PLANS,
         label: "Kế hoạch tuần",
         icon: <CalendarDays className="size-5" />,
+      }]
+      : []),
+    ...(role === "ADMIN"
+      ? [{
+        href: APP_ROUTES.ADMIN.USERS,
+        label: "Quản lý người dùng",
+        icon: <Users className="size-5" />,
+        children: [
+          {
+            href: APP_ROUTES.ADMIN.USERS,
+            label: "Danh sách người dùng",
+          },
+        ],
       }]
       : []),
     {

@@ -7,3 +7,4 @@ export * from "./SearchInput";
 export * from "./Select";
 export * from "./Skeleton";
 export * from "./StatusBadge";
+export * from "./DropdownMenu";
