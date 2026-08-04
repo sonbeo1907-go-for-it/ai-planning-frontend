@@ -5,3 +5,4 @@ export * from "./LoginScreen";
 export * from "./ProfileOverview";
 export * from "./RequireAuth";
 export * from "./RoleDashboard";
+export * from "./ChangePasswordModal";

@@ -9,6 +9,7 @@ import type {
   AccessTokenResponse,
   CurrentUserProfile,
   LoginCredentials,
+  ChangePasswordRequest,
 } from "./auth.types";
 
 function unwrap<T>(response: ApiResponse<T>): T {
@@ -54,6 +55,17 @@ export const authApi = {
       accessToken,
       handleAuthenticationError: false,
     });
+  },
+
+  async changePassword(
+    data: ChangePasswordRequest,
+    accessToken: string,
+  ): Promise<void> {
+    await apiClient.put<null, ChangePasswordRequest>(
+      API_ROUTES.PROFILE_PASSWORD,
+      data,
+      { accessToken },
+    );
   },
 };
 

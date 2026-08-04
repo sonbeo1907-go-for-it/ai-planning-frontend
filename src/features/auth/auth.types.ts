@@ -57,3 +57,9 @@ export interface CurrentUserProfile {
     assignedClasses: AssignedClassSummary[];
   };
 }
+
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}

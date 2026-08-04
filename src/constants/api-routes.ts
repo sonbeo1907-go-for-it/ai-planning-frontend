@@ -5,6 +5,7 @@ export const API_ROUTES = {
     LOGOUT: "/auth/logout",
   },
   PROFILE: "/profile",
+  PROFILE_PASSWORD: "/profile/password",
   WEEKLY_PLANS: "/weekly-plans",
   DAILY_PLANS: "/daily-plans",
   CURRICULUM: "/curriculum",

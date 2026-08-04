@@ -12,6 +12,9 @@ import type {
   AssignedClassSummary,
   EnrollmentSummary,
 } from "../auth.types";
+import { useState } from "react";
+import { Button } from "@/components/ui";
+import { ChangePasswordModal } from "./ChangePasswordModal";
 
 function accountStatusTone(status: AccountStatus) {
   switch (status) {
@@ -58,6 +61,7 @@ function LearningList({
 
 export function ProfileOverview() {
   const profile = useAuthStore((state) => state.profile);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
   if (!profile) {
     return null;
@@ -104,6 +108,15 @@ export function ProfileOverview() {
           items={profile.instructor?.assignedClasses ?? []}
         />
       )}
+
+      <div className="flex justify-end mt-4">
+        <Button onClick={() => setIsPasswordModalOpen(true)}>Đổi mật khẩu</Button>
+      </div>
+
+      <ChangePasswordModal 
+        isOpen={isPasswordModalOpen} 
+        onClose={() => setIsPasswordModalOpen(false)} 
+      />
     </div>
   );
 }
