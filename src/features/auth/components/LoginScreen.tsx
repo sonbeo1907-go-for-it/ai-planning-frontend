@@ -6,6 +6,7 @@ import {
 } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 
 import { WarningPanel } from "@/components/planning";
@@ -136,14 +137,24 @@ export function LoginScreen({ reason }: LoginScreenProps) {
             {...form.register("email")}
             error={form.formState.errors.email?.message}
           />
-          <Input
-            id="password"
-            label="Mật khẩu"
-            type="password"
-            autoComplete="current-password"
-            {...form.register("password")}
-            error={form.formState.errors.password?.message}
-          />
+          <div className="space-y-2">
+            <Input
+              id="password"
+              label="Mật khẩu"
+              type="password"
+              autoComplete="current-password"
+              {...form.register("password")}
+              error={form.formState.errors.password?.message}
+            />
+            <div className="flex justify-end">
+              <Link
+                href="/forgot-password"
+                className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
+              >
+                Quên mật khẩu?
+              </Link>
+            </div>
+          </div>
           <Button
             className="w-full"
             type="submit"

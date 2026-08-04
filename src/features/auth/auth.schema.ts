@@ -31,3 +31,14 @@ export const changePasswordSchema = z
   });
 
 export type ChangePasswordFormValues = z.infer<typeof changePasswordSchema>;
+
+export const passwordResetRequestSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .min(1, "Vui lòng nhập email.")
+    .email("Email không hợp lệ.")
+    .max(254, "Email không được quá 254 ký tự."),
+});
+
+export type PasswordResetRequestFormValues = z.infer<typeof passwordResetRequestSchema>;

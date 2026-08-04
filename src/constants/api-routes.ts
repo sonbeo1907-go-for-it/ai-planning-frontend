@@ -3,6 +3,7 @@ export const API_ROUTES = {
     LOGIN: "/auth/login",
     REFRESH: "/auth/refresh",
     LOGOUT: "/auth/logout",
+    PASSWORD_RESET_REQUEST: "/auth/password-reset-request",
   },
   PROFILE: "/profile",
   PROFILE_PASSWORD: "/profile/password",

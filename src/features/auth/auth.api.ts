@@ -11,6 +11,7 @@ import type {
   LoginCredentials,
   ChangePasswordRequest,
 } from "./auth.types";
+import type { PasswordResetRequestFormValues } from "./auth.schema";
 
 function unwrap<T>(response: ApiResponse<T>): T {
   return response.data;
@@ -53,6 +54,12 @@ export const authApi = {
   async logout(accessToken: string | null): Promise<void> {
     await apiClient.post<null>(API_ROUTES.AUTH.LOGOUT, undefined, {
       accessToken,
+      handleAuthenticationError: false,
+    });
+  },
+
+  async requestPasswordReset(request: PasswordResetRequestFormValues): Promise<void> {
+    await apiClient.post(API_ROUTES.AUTH.PASSWORD_RESET_REQUEST, request, {
       handleAuthenticationError: false,
     });
   },
