@@ -6,7 +6,8 @@ import {
   useUsers,
   UserFilterBar,
   UserTable,
-  UserFormModal,
+  UserRoleModal,
+  UserActivateModal,
   UserDeactivateModal,
   User,
 } from "@/features/user";
@@ -34,25 +35,28 @@ function AdminUsersContent() {
     handleRoleFilter,
     handleStatusFilter,
     handlePageChange,
-    createUser,
-    updateUser,
+    updateUserRole,
+    activateUser,
     deactivateUser,
   } = useUsers();
 
-  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
+  const [userToChangeRole, setUserToChangeRole] = useState<User | null>(null);
+
+  const [isActivateModalOpen, setIsActivateModalOpen] = useState(false);
+  const [userToActivate, setUserToActivate] = useState<User | null>(null);
 
   const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState(false);
   const [userToDeactivate, setUserToDeactivate] = useState<User | null>(null);
 
-  const handleOpenCreateModal = () => {
-    setSelectedUser(null);
-    setIsFormModalOpen(true);
+  const handleOpenRoleModal = (user: User) => {
+    setUserToChangeRole(user);
+    setIsRoleModalOpen(true);
   };
 
-  const handleOpenEditModal = (user: User) => {
-    setSelectedUser(user);
-    setIsFormModalOpen(true);
+  const handleOpenActivateModal = (user: User) => {
+    setUserToActivate(user);
+    setIsActivateModalOpen(true);
   };
 
   const handleOpenDeactivateModal = (user: User) => {
@@ -62,7 +66,6 @@ function AdminUsersContent() {
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
-
       {/* Thông báo lỗi nếu có */}
       {error && (
         <div className="p-4 bg-rose-50 border border-rose-200 text-rose-700 text-sm rounded-xl flex items-center justify-between">
@@ -81,7 +84,6 @@ function AdminUsersContent() {
         onSearchChange={handleSearchChange}
         onRoleChange={handleRoleFilter}
         onStatusChange={handleStatusFilter}
-        onCreateClick={handleOpenCreateModal}
       />
 
       {/* Table */}
@@ -90,23 +92,32 @@ function AdminUsersContent() {
         pagination={pagination}
         loading={loading}
         onPageChange={handlePageChange}
-        onEdit={handleOpenEditModal}
+        onChangeRole={handleOpenRoleModal}
+        onActivate={handleOpenActivateModal}
         onDeactivate={handleOpenDeactivateModal}
       />
 
-      {/* Modals */}
-      <UserFormModal
-        isOpen={isFormModalOpen}
-        user={selectedUser}
-        onClose={() => setIsFormModalOpen(false)}
-        onSubmitCreate={async (payload) => {
-          await createUser(payload);
-        }}
-        onSubmitUpdate={async (id, payload) => {
-          await updateUser(id, payload);
+      {/* Role Change Modal */}
+      <UserRoleModal
+        isOpen={isRoleModalOpen}
+        user={userToChangeRole}
+        onClose={() => setIsRoleModalOpen(false)}
+        onConfirm={async (id, role) => {
+          await updateUserRole(id, role);
         }}
       />
 
+      {/* Activate Modal */}
+      <UserActivateModal
+        isOpen={isActivateModalOpen}
+        user={userToActivate}
+        onClose={() => setIsActivateModalOpen(false)}
+        onConfirm={async (id) => {
+          await activateUser(id);
+        }}
+      />
+
+      {/* Deactivate Modal */}
       <UserDeactivateModal
         isOpen={isDeactivateModalOpen}
         user={userToDeactivate}
