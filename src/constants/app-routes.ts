@@ -1,6 +1,7 @@
 export const APP_ROUTES = {
   HOME: "/",
   LOGIN: "/login",
+  REGISTER: "/register",
   PROFILE: "/profile",
   FORBIDDEN: "/forbidden",
   STUDENT: {

@@ -18,6 +18,7 @@
 | Purpose | Method and path | Client behaviour |
 | --- | --- | --- |
 | Login | `POST /auth/login` | Send `{ "email", "password" }`, store `data.accessToken` in memory, then fetch the current profile. |
+| Register | `POST /auth/register` | Send `{ "email", "password", "fullName" }`; accept an empty `202` response and direct the user to login. |
 | Refresh | `POST /auth/refresh` | Relies on the HttpOnly refresh cookie; used only to restore a session. |
 | Logout | `POST /auth/logout` | Sends the in-memory access token and refresh cookie; expects `204`. |
 | Profile | `GET /profile` | Sends the Bearer token and returns only the current authenticated user. |
@@ -47,6 +48,22 @@ of truth.
 - Do not log credentials or access tokens.
 - Backend CORS must allow the frontend origin. Local development uses
   `CORS_ALLOWED_ORIGINS=http://localhost:3000`.
+
+## Registration UI rules
+
+- `/register` is public and is linked from the login screen.
+- Submit only `email`, `password`, and `fullName`. The client must not submit a
+  role, status, or username; the backend creates an active Student account and
+  generates its internal username.
+- Require a local `confirmPassword` field that matches `password`; never include
+  `confirmPassword` in the backend request.
+- Validate email format and its 254-character limit, full name up to 150
+  characters, and a password of 8–100 characters containing an uppercase
+  letter, lowercase letter, and digit.
+- Treat every valid `202 Accepted` response identically, including duplicate
+  email submissions. Show a generic acknowledgement and link back to login so
+  the UI does not reveal whether an email is already registered.
+- Map `400 VALIDATION_FAILED` field violations to the matching form fields.
 
 ## Profile UI
 

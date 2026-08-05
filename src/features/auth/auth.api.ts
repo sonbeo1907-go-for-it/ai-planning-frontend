@@ -8,7 +8,9 @@ import type { ApiResponse } from "@/types/api";
 import type {
   AccessTokenResponse,
   CurrentUserProfile,
+  GoogleLoginCredentials,
   LoginCredentials,
+  RegisterCredentials,
 } from "./auth.types";
 
 function unwrap<T>(response: ApiResponse<T>): T {
@@ -21,6 +23,25 @@ export const authApi = {
       ApiResponse<AccessTokenResponse>,
       LoginCredentials
     >(API_ROUTES.AUTH.LOGIN, credentials, {
+      handleAuthenticationError: false,
+    });
+
+    return unwrap(response);
+  },
+
+  async register(credentials: RegisterCredentials): Promise<void> {
+    await apiClient.post<null, RegisterCredentials>(
+      API_ROUTES.AUTH.REGISTER,
+      credentials,
+      { handleAuthenticationError: false },
+    );
+  },
+
+  async loginWithGoogle(idToken: string): Promise<AccessTokenResponse> {
+    const response = await apiClient.post<
+      ApiResponse<AccessTokenResponse>,
+      GoogleLoginCredentials
+    >(API_ROUTES.AUTH.GOOGLE_LOGIN, { idToken }, {
       handleAuthenticationError: false,
     });
 

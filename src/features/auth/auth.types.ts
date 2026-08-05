@@ -19,6 +19,16 @@ export interface LoginCredentials {
   password: string;
 }
 
+export interface RegisterCredentials {
+  email: string;
+  password: string;
+  fullName: string;
+}
+
+export interface GoogleLoginCredentials {
+  idToken: string;
+}
+
 export interface AccessTokenResponse {
   accessToken: string;
   tokenType: "Bearer";
