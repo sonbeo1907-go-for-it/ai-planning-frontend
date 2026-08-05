@@ -10,6 +10,7 @@ import type {
   CurrentUserProfile,
   LoginCredentials,
   ChangePasswordRequest,
+  PasswordResetConfirmRequest,
 } from "./auth.types";
 import type { PasswordResetRequestFormValues } from "./auth.schema";
 
@@ -60,6 +61,12 @@ export const authApi = {
 
   async requestPasswordReset(request: PasswordResetRequestFormValues): Promise<void> {
     await apiClient.post(API_ROUTES.AUTH.PASSWORD_RESET_REQUEST, request, {
+      handleAuthenticationError: false,
+    });
+  },
+
+  async confirmPasswordReset(request: PasswordResetConfirmRequest): Promise<void> {
+    await apiClient.post(API_ROUTES.AUTH.PASSWORD_RESET, request, {
       handleAuthenticationError: false,
     });
   },

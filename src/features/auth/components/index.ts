@@ -7,3 +7,4 @@ export * from "./RequireAuth";
 export * from "./RoleDashboard";
 export * from "./ChangePasswordModal";
 export * from "./ForgotPasswordScreen";
+export * from "./ResetPasswordScreen";

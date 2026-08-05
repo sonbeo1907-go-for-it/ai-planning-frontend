@@ -4,6 +4,7 @@ export const API_ROUTES = {
     REFRESH: "/auth/refresh",
     LOGOUT: "/auth/logout",
     PASSWORD_RESET_REQUEST: "/auth/password-reset-request",
+    PASSWORD_RESET: "/auth/password-reset",
   },
   PROFILE: "/profile",
   PROFILE_PASSWORD: "/profile/password",
