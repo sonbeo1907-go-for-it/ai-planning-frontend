@@ -7,6 +7,7 @@ import {
   CourseResponse,
   CreateClassRequest,
   ClassResponse,
+  UpdateClassRequest,
 } from "./curriculum.types";
 
 function authenticatedRequestOptions() {
@@ -35,6 +36,28 @@ export const curriculumService = {
   createClass(payload: CreateClassRequest): Promise<{ data: ClassResponse }> {
     return apiClient.post<{ data: ClassResponse }, CreateClassRequest>(
       API_ROUTES.ADMIN.CLASSES,
+      payload,
+      authenticatedRequestOptions(),
+    );
+  },
+
+  getClasses(page: number = 0, size: number = 20, sort: string[] = []): Promise<{ data: PageResponse<ClassResponse> }> {
+    const query: Record<string, any> = { page, size };
+    if (sort.length > 0) {
+      query.sort = sort;
+    }
+    return apiClient.get<{ data: PageResponse<ClassResponse> }>(
+      API_ROUTES.ADMIN.CLASSES,
+      {
+        ...authenticatedRequestOptions(),
+        query,
+      }
+    );
+  },
+
+  updateClass(id: string, payload: UpdateClassRequest): Promise<{ data: ClassResponse }> {
+    return apiClient.put<{ data: ClassResponse }, UpdateClassRequest>(
+      `${API_ROUTES.ADMIN.CLASSES}/${id}`,
       payload,
       authenticatedRequestOptions(),
     );

@@ -7,6 +7,7 @@ import {
   LogOut,
   UserRound,
   UsersRound,
+  GraduationCap,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -56,6 +57,23 @@ function getNavigationItems(role: UserRole) {
           {
             href: APP_ROUTES.ADMIN.USERS,
             label: "Danh sách người dùng",
+          },
+        ],
+      }]
+      : []),
+    ...(role === "ADMIN"
+      ? [{
+        href: APP_ROUTES.ADMIN.COURSES, // Default route for the parent group
+        label: "Đào tạo",
+        icon: <GraduationCap className="size-5" />,
+        children: [
+          {
+            href: APP_ROUTES.ADMIN.COURSES,
+            label: "Khóa học",
+          },
+          {
+            href: APP_ROUTES.ADMIN.CLASSES,
+            label: "Lớp học",
           },
         ],
       }]

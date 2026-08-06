@@ -35,12 +35,12 @@ describe("ClassFormModal", () => {
   });
 
   it("should not render if isOpen is false", () => {
-    render(<ClassFormModal isOpen={false} onClose={mockOnClose} onSubmitCreate={mockOnSubmitCreate} />);
+    render(<ClassFormModal isOpen={false} cls={null} onClose={mockOnClose} onSubmitCreate={mockOnSubmitCreate} />);
     expect(screen.queryByText("Tạo lớp học mới")).not.toBeInTheDocument();
   });
 
   it("should render correctly when isOpen is true", () => {
-    render(<ClassFormModal isOpen={true} onClose={mockOnClose} onSubmitCreate={mockOnSubmitCreate} />);
+    render(<ClassFormModal isOpen={true} cls={null} onClose={mockOnClose} onSubmitCreate={mockOnSubmitCreate} />);
     
     expect(screen.getByText("Tạo lớp học mới")).toBeInTheDocument();
     expect(screen.getByRole("combobox", { name: /Khóa học/i })).toBeInTheDocument();
@@ -51,7 +51,7 @@ describe("ClassFormModal", () => {
 
   it("should display validation errors if required fields are missing", async () => {
     const user = userEvent.setup();
-    render(<ClassFormModal isOpen={true} onClose={mockOnClose} onSubmitCreate={mockOnSubmitCreate} />);
+    render(<ClassFormModal isOpen={true} cls={null} onClose={mockOnClose} onSubmitCreate={mockOnSubmitCreate} />);
     
     const submitButton = screen.getByRole("button", { name: "Tạo lớp học" });
     await user.click(submitButton);
@@ -69,7 +69,7 @@ describe("ClassFormModal", () => {
     const user = userEvent.setup();
     mockOnSubmitCreate.mockResolvedValueOnce(undefined);
     
-    render(<ClassFormModal isOpen={true} onClose={mockOnClose} onSubmitCreate={mockOnSubmitCreate} />);
+    render(<ClassFormModal isOpen={true} cls={null} onClose={mockOnClose} onSubmitCreate={mockOnSubmitCreate} />);
     
     // Wait for the mock course to appear in the select
     await waitFor(() => {
@@ -105,7 +105,7 @@ describe("ClassFormModal", () => {
     });
     mockOnSubmitCreate.mockRejectedValueOnce(error);
     
-    render(<ClassFormModal isOpen={true} onClose={mockOnClose} onSubmitCreate={mockOnSubmitCreate} />);
+    render(<ClassFormModal isOpen={true} cls={null} onClose={mockOnClose} onSubmitCreate={mockOnSubmitCreate} />);
     
     await waitFor(() => {
         expect(screen.getByRole("option", { name: "COURSE1 - Course 1" })).toBeInTheDocument();

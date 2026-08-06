@@ -29,6 +29,14 @@ export interface CreateClassRequest {
   status: ClassStatus;
 }
 
+export interface UpdateClassRequest {
+  name: string;
+  description?: string;
+  openedAt?: string;
+  closedAt?: string;
+  version: number;
+}
+
 export interface ClassResponse {
   id: string;
   courseId: string;
@@ -42,4 +50,5 @@ export interface ClassResponse {
   updatedAt: string;
   createdBy?: string;
   updatedBy?: string;
+  version: number;
 }

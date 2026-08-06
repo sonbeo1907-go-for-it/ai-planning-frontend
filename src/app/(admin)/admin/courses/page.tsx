@@ -4,9 +4,22 @@ import { useState } from "react";
 import { CourseFormModal } from "@/features/curriculum/components/CourseFormModal";
 import { curriculumService } from "@/features/curriculum/curriculum.service";
 import { CreateCourseRequest } from "@/features/curriculum/curriculum.types";
+import { AuthenticatedShell } from "@/features/auth";
 import { toast } from "sonner";
 
 export default function CoursesPage() {
+  return (
+    <AuthenticatedShell
+      allowedRoles={["ADMIN"]}
+      title="Quản lý Khóa học"
+      description="Quản lý danh mục các khóa học trong hệ thống."
+    >
+      <CoursesContent />
+    </AuthenticatedShell>
+  );
+}
+
+function CoursesContent() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleCreateCourse = async (payload: CreateCourseRequest) => {
@@ -16,12 +29,8 @@ export default function CoursesPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-800">Quản lý Khóa học</h1>
-          <p className="text-slate-500 text-sm mt-1">Danh sách tất cả các khóa học trong hệ thống.</p>
-        </div>
+    <div className="mx-auto max-w-7xl space-y-6">
+      <div className="flex items-center justify-end">
         <button
           onClick={() => setIsModalOpen(true)}
           className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition"
