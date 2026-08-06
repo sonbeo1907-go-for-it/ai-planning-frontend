@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { CourseFormModal } from "@/features/curriculum/components/CourseFormModal";
-import { curriculumService } from "@/features/curriculum/curriculum.service";
-import { CreateCourseRequest } from "@/features/curriculum/curriculum.types";
+import { CourseListTable } from "@/features/curriculum/components/CourseListTable";
+import { useCourses } from "@/features/curriculum/hooks/useCourses";
 import { AuthenticatedShell } from "@/features/auth";
 import { toast } from "sonner";
 
@@ -21,15 +21,27 @@ export default function CoursesPage() {
 
 function CoursesContent() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleCreateCourse = async (payload: CreateCourseRequest) => {
-    await curriculumService.createCourse(payload);
-    toast.success("Khóa học đã được tạo thành công!");
-    // In a real app, we would refresh the list of courses here
-  };
+  
+  const {
+    courses,
+    loading,
+    error,
+    pagination,
+    fetchCourses,
+    handleCreateCourse,
+  } = useCourses();
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
+      {error && (
+        <div className="p-4 bg-rose-50 border border-rose-200 text-rose-700 text-sm rounded-xl flex items-center gap-2">
+          <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>{error}</span>
+        </div>
+      )}
+
       <div className="flex items-center justify-end">
         <button
           onClick={() => setIsModalOpen(true)}
@@ -42,9 +54,15 @@ function CoursesContent() {
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden min-h-[400px] flex items-center justify-center">
-        <p className="text-slate-500">Chưa có tính năng hiển thị danh sách khóa học (Đang chờ API GET /admin/courses).</p>
-      </div>
+      <CourseListTable
+        courses={courses}
+        pagination={pagination}
+        loading={loading}
+        onPageChange={fetchCourses}
+        onEdit={(course) => {
+          toast.info(`Tính năng chỉnh sửa khóa học ${course.code} sẽ được phát triển ở các User Story tiếp theo.`);
+        }}
+      />
 
       <CourseFormModal
         isOpen={isModalOpen}

@@ -2,6 +2,8 @@
 
 import { ClassResponse } from "../curriculum.types";
 import { PageResponse } from "@/types/api";
+import { format } from "date-fns";
+import { vi } from "date-fns/locale";
 
 interface ClassListTableProps {
   classes: ClassResponse[];
@@ -88,8 +90,8 @@ export function ClassListTable({
                     </span>
                   </td>
                   <td className="py-3.5 px-4 text-slate-500 text-xs">
-                    <div>Mở: {cls.openedAt ? new Date(cls.openedAt).toLocaleDateString("vi-VN") : "N/A"}</div>
-                    <div>Đóng: {cls.closedAt ? new Date(cls.closedAt).toLocaleDateString("vi-VN") : "N/A"}</div>
+                    <div>Mở: {cls.openedAt ? format(new Date(cls.openedAt), "dd/MM/yyyy", { locale: vi }) : "N/A"}</div>
+                    <div>Đóng: {cls.closedAt ? format(new Date(cls.closedAt), "dd/MM/yyyy", { locale: vi }) : "N/A"}</div>
                   </td>
                   <td className="py-3.5 px-4 text-right">
                     <div className="flex items-center justify-end gap-2">
