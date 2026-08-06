@@ -11,4 +11,8 @@ export const API_ROUTES = {
   ENROLLMENTS: "/enrollments",
   PLAN_REVIEWS: "/plan-reviews",
   USERS: "/users",
+  ADMIN: {
+    COURSES: "/admin/courses",
+    CLASSES: "/admin/classes",
+  }
 } as const;
