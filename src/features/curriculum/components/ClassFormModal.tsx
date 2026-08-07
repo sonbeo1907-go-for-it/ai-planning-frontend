@@ -71,7 +71,11 @@ export function ClassFormModal({
         const fetchCourses = async () => {
           setLoadingCourses(true);
           try {
-            const response = await curriculumService.getCourses(0, 100);
+            const response = await curriculumService.getCourses({
+              page: 0,
+              size: 100,
+              status: "ACTIVE",
+            });
             setCourses(response.data.content || []);
           } catch (error) {
             console.error("Failed to fetch courses:", error);
@@ -304,7 +308,7 @@ export function ClassFormModal({
                 </label>
                 <input
                   type="text"
-                  value={cls.code}
+                  value={cls?.code ?? ""}
                   disabled
                   className="w-full px-3.5 py-2 bg-slate-100 border border-slate-200 rounded-lg text-sm text-slate-500 cursor-not-allowed"
                 />
