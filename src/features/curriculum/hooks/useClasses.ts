@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { toast } from "sonner";
 import { curriculumService } from "../curriculum.service";
-import { CreateClassRequest, UpdateClassRequest, ClassResponse } from "../curriculum.types";
+import { CreateClassRequest, UpdateClassRequest, ChangeClassStatusRequest, ClassResponse } from "../curriculum.types";
 import { PageResponse } from "@/types/api";
 
 export function useClasses() {
@@ -44,7 +44,8 @@ export function useClasses() {
       await curriculumService.createClass(payload);
       toast.success("Lớp học đã được tạo thành công!");
       fetchClasses(0);
-    } catch (err) {
+    } catch (err: any) {
+      toast.error(err?.message || "Đã xảy ra lỗi khi tạo lớp học");
       throw err;
     }
   };
@@ -54,7 +55,19 @@ export function useClasses() {
       await curriculumService.updateClass(id, payload);
       toast.success("Cập nhật lớp học thành công!");
       fetchClasses(pagination.page);
-    } catch (err) {
+    } catch (err: any) {
+      toast.error(err?.message || "Đã xảy ra lỗi khi cập nhật lớp học");
+      throw err;
+    }
+  };
+
+  const handleChangeStatus = async (id: string, payload: ChangeClassStatusRequest) => {
+    try {
+      await curriculumService.changeClassStatus(id, payload);
+      toast.success("Chuyển trạng thái lớp học thành công!");
+      fetchClasses(pagination.page);
+    } catch (err: any) {
+      toast.error(err?.message || "Đã xảy ra lỗi khi chuyển trạng thái lớp học");
       throw err;
     }
   };
@@ -67,5 +80,6 @@ export function useClasses() {
     fetchClasses,
     handleCreateClass,
     handleUpdateClass,
+    handleChangeStatus,
   };
 }

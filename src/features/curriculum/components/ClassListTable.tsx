@@ -11,6 +11,7 @@ interface ClassListTableProps {
   loading: boolean;
   onPageChange: (page: number) => void;
   onEdit: (cls: ClassResponse) => void;
+  onChangeStatus?: (cls: ClassResponse, action: "OPEN" | "CLOSE") => void;
 }
 
 const statusBadgeConfig: Record<string, { label: string; className: string }> = {
@@ -34,6 +35,7 @@ export function ClassListTable({
   loading,
   onPageChange,
   onEdit,
+  onChangeStatus,
 }: ClassListTableProps) {
   if (loading && classes.length === 0) {
     return (
@@ -94,10 +96,37 @@ export function ClassListTable({
                     <div>Đóng: {cls.closedAt ? format(new Date(cls.closedAt), "dd/MM/yyyy", { locale: vi }) : "N/A"}</div>
                   </td>
                   <td className="py-3.5 px-4 text-right">
-                    <div className="flex items-center justify-end gap-2">
+                    <div className="flex items-center justify-end gap-1.5">
+                      {/* Context-aware Status Action Button */}
+                      {cls.status === "PLANNED" && onChangeStatus && (
+                        <button
+                          onClick={() => onChangeStatus(cls, "OPEN")}
+                          className="p-1.5 text-emerald-600 hover:text-white hover:bg-emerald-500 rounded-md transition border border-emerald-200 hover:border-transparent flex items-center justify-center"
+                          title="Mở lớp học"
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </button>
+                      )}
+                      
+                      {cls.status === "ACTIVE" && onChangeStatus && (
+                        <button
+                          onClick={() => onChangeStatus(cls, "CLOSE")}
+                          className="p-1.5 text-rose-600 hover:text-white hover:bg-rose-500 rounded-md transition border border-rose-200 hover:border-transparent flex items-center justify-center"
+                          title="Đóng lớp học"
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 10h6v4H9z" />
+                          </svg>
+                        </button>
+                      )}
+
                       <button
                         onClick={() => onEdit(cls)}
-                        className="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition"
+                        className="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition border border-transparent"
                         title="Chỉnh sửa thông tin"
                       >
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

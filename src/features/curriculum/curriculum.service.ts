@@ -8,6 +8,7 @@ import {
   CreateClassRequest,
   ClassResponse,
   UpdateClassRequest,
+  ChangeClassStatusRequest,
 } from "./curriculum.types";
 
 function authenticatedRequestOptions() {
@@ -58,6 +59,14 @@ export const curriculumService = {
   updateClass(id: string, payload: UpdateClassRequest): Promise<{ data: ClassResponse }> {
     return apiClient.put<{ data: ClassResponse }, UpdateClassRequest>(
       `${API_ROUTES.ADMIN.CLASSES}/${id}`,
+      payload,
+      authenticatedRequestOptions(),
+    );
+  },
+
+  changeClassStatus(id: string, payload: ChangeClassStatusRequest): Promise<{ data: ClassResponse }> {
+    return apiClient.put<{ data: ClassResponse }, ChangeClassStatusRequest>(
+      `${API_ROUTES.ADMIN.CLASSES}/${id}/status`,
       payload,
       authenticatedRequestOptions(),
     );
