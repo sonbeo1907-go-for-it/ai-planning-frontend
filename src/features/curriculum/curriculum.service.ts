@@ -4,14 +4,18 @@ import { apiClient } from "@/lib/api-client";
 import type { ApiResponse, PageResponse } from "@/types/api";
 
 import type {
+  ChangeClassStatusRequest,
   ClassResponse,
+  CourseModule,
   CourseResponse,
   CourseSearchParams,
-  ChangeClassStatusRequest,
   CreateClassRequest,
   CreateCourseRequest,
+  CreateModuleInput,
+  ReorderModulesInput,
   UpdateClassRequest,
   UpdateCourseRequest,
+  UpdateModuleInput,
 } from "./curriculum.types";
 
 function authenticatedRequestOptions() {
@@ -20,6 +24,10 @@ function authenticatedRequestOptions() {
 
 function coursePath(courseId: string): string {
   return `${API_ROUTES.COURSES}/${courseId}`;
+}
+
+function modulesPath(courseId: string): string {
+  return `${coursePath(courseId)}/modules`;
 }
 
 export const curriculumService = {
@@ -79,6 +87,71 @@ export const curriculumService = {
   deactivateCourse(courseId: string): Promise<ApiResponse<CourseResponse>> {
     return apiClient.post<ApiResponse<CourseResponse>>(
       `${coursePath(courseId)}/deactivate`,
+      undefined,
+      authenticatedRequestOptions(),
+    );
+  },
+
+  getModulesByCourseId(
+    courseId: string,
+  ): Promise<ApiResponse<CourseModule[]>> {
+    return apiClient.get<ApiResponse<CourseModule[]>>(
+      modulesPath(courseId),
+      authenticatedRequestOptions(),
+    );
+  },
+
+  createModule(
+    courseId: string,
+    payload: CreateModuleInput,
+  ): Promise<ApiResponse<CourseModule>> {
+    return apiClient.post<ApiResponse<CourseModule>, CreateModuleInput>(
+      modulesPath(courseId),
+      payload,
+      authenticatedRequestOptions(),
+    );
+  },
+
+  updateModule(
+    courseId: string,
+    moduleId: string,
+    payload: UpdateModuleInput,
+  ): Promise<ApiResponse<CourseModule>> {
+    return apiClient.patch<ApiResponse<CourseModule>, UpdateModuleInput>(
+      `${modulesPath(courseId)}/${moduleId}`,
+      payload,
+      authenticatedRequestOptions(),
+    );
+  },
+
+  reorderModules(
+    courseId: string,
+    payload: ReorderModulesInput,
+  ): Promise<ApiResponse<CourseModule[]>> {
+    return apiClient.put<ApiResponse<CourseModule[]>, ReorderModulesInput>(
+      `${modulesPath(courseId)}/reorder`,
+      payload,
+      authenticatedRequestOptions(),
+    );
+  },
+
+  activateModule(
+    courseId: string,
+    moduleId: string,
+  ): Promise<ApiResponse<CourseModule>> {
+    return apiClient.post<ApiResponse<CourseModule>>(
+      `${modulesPath(courseId)}/${moduleId}/activate`,
+      undefined,
+      authenticatedRequestOptions(),
+    );
+  },
+
+  deactivateModule(
+    courseId: string,
+    moduleId: string,
+  ): Promise<ApiResponse<CourseModule>> {
+    return apiClient.post<ApiResponse<CourseModule>>(
+      `${modulesPath(courseId)}/${moduleId}/deactivate`,
       undefined,
       authenticatedRequestOptions(),
     );

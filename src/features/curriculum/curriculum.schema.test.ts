@@ -2,7 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import {
   createCourseSchema,
+  createModuleSchema,
   updateCourseSchema,
+  updateModuleSchema,
 } from "./curriculum.schema";
 
 describe("course schemas", () => {
@@ -47,5 +49,45 @@ describe("course schemas", () => {
       name: "Updated course",
       description: "Updated",
     });
+  });
+});
+
+describe("module schemas", () => {
+  it("accepts a valid module payload", () => {
+    expect(createModuleSchema.safeParse({
+      code: "JAVA_CORE",
+      name: "Java Core Basic",
+      description: "Nội dung Java căn bản",
+      sequenceNumber: 1,
+    }).success).toBe(true);
+  });
+
+  it.each(["JAVA-CORE!", "_JAVA", "JAVA_"])(
+    "rejects invalid module code %s",
+    (code) => {
+      expect(createModuleSchema.safeParse({ code, name: "Java Core" }).success)
+        .toBe(false);
+    },
+  );
+
+  it("rejects an empty module name", () => {
+    expect(createModuleSchema.safeParse({
+      code: "JAVA_CORE",
+      name: "",
+    }).success).toBe(false);
+  });
+
+  it("accepts a valid module update", () => {
+    expect(updateModuleSchema.safeParse({
+      name: "Java Core Advanced",
+      description: "Bổ sung kiến thức OOP nâng cao",
+    }).success).toBe(true);
+  });
+
+  it("rejects an empty module name in an update", () => {
+    expect(updateModuleSchema.safeParse({
+      name: "",
+      description: "Mô tả hợp lệ",
+    }).success).toBe(false);
   });
 });

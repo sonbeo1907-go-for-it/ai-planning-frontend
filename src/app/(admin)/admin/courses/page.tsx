@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
 
 import { WarningPanel } from "@/components/planning";
@@ -10,8 +11,8 @@ import { CourseFilterBar } from "@/features/curriculum/components/CourseFilterBa
 import { CourseFormModal } from "@/features/curriculum/components/CourseFormModal";
 import { CourseListTable } from "@/features/curriculum/components/CourseListTable";
 import { CourseStatusModal } from "@/features/curriculum/components/CourseStatusModal";
-import { useCourses } from "@/features/curriculum/hooks/useCourses";
 import type { CourseResponse } from "@/features/curriculum/curriculum.types";
+import { useCourses } from "@/features/curriculum/hooks/useCourses";
 
 export default function CoursesPage() {
   return (
@@ -26,6 +27,7 @@ export default function CoursesPage() {
 }
 
 function CoursesContent() {
+  const router = useRouter();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingCourse, setEditingCourse] = useState<CourseResponse | null>(null);
   const [statusCourse, setStatusCourse] = useState<CourseResponse | null>(null);
@@ -78,6 +80,7 @@ function CoursesContent() {
         loading={coursesState.loading}
         onPageChange={coursesState.handlePageChange}
         onEdit={openEditForm}
+        onManageModules={(course) => router.push(`/admin/courses/${course.id}/modules`)}
         onStatusChange={setStatusCourse}
       />
 

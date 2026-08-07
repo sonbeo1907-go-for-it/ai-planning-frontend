@@ -1,4 +1,4 @@
-import { Pencil, Power, PowerOff } from "lucide-react";
+import { Layers, Pencil, Power, PowerOff } from "lucide-react";
 
 import { Button, LoadingState, StatusBadge } from "@/components/ui";
 import type { PageResponse } from "@/types/api";
@@ -12,6 +12,7 @@ export interface CourseListTableProps {
   loading: boolean;
   onPageChange: (page: number) => void;
   onEdit: (course: CourseResponse) => void;
+  onManageModules?: (course: CourseResponse) => void;
   onStatusChange: (course: CourseResponse) => void;
 }
 
@@ -32,6 +33,7 @@ export function CourseListTable({
   loading,
   onPageChange,
   onEdit,
+  onManageModules,
   onStatusChange,
 }: CourseListTableProps) {
   if (loading && courses.length === 0) {
@@ -107,6 +109,16 @@ export function CourseListTable({
                 </td>
                 <td className="px-5 py-4">
                   <div className="flex justify-end gap-2">
+                    {onManageModules && (
+                      <Button
+                        variant="ghost"
+                        className="min-h-9 px-3"
+                        onClick={() => onManageModules(course)}
+                      >
+                        <Layers className="size-4" aria-hidden="true" />
+                        Modules
+                      </Button>
+                    )}
                     <Button
                       variant="secondary"
                       className="min-h-9 px-3"
