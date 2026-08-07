@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ClassFormModal } from "@/features/curriculum/components/ClassFormModal";
 import { ClassListTable } from "@/features/curriculum/components/ClassListTable";
+import { ClassStatusConfirmModal } from "@/features/curriculum/components/ClassStatusConfirmModal";
 import { ClassResponse } from "@/features/curriculum/curriculum.types";
 import { useClasses } from "@/features/curriculum/hooks/useClasses";
 import { AuthenticatedShell } from "@/features/auth";
@@ -22,6 +23,10 @@ export default function ClassesPage() {
 function ClassesContent() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedClass, setSelectedClass] = useState<ClassResponse | null>(null);
+
+  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+  const [statusAction, setStatusAction] = useState<"OPEN" | "CLOSE" | null>(null);
+  
   const {
     classes,
     loading,
@@ -30,6 +35,7 @@ function ClassesContent() {
     fetchClasses,
     handleCreateClass,
     handleUpdateClass,
+    handleChangeStatus,
   } = useClasses();
 
   const handleOpenCreateModal = () => {
@@ -40,6 +46,21 @@ function ClassesContent() {
   const handleOpenEditModal = (cls: ClassResponse) => {
     setSelectedClass(cls);
     setIsModalOpen(true);
+  };
+
+  const handleOpenStatusModal = (cls: ClassResponse, action: "OPEN" | "CLOSE") => {
+    setSelectedClass(cls);
+    setStatusAction(action);
+    setIsStatusModalOpen(true);
+  };
+
+  const handleConfirmStatusChange = async () => {
+    if (!selectedClass || !statusAction) return;
+    
+    await handleChangeStatus(selectedClass.id, {
+      status: statusAction === "OPEN" ? "ACTIVE" : "CLOSED",
+      version: selectedClass.version,
+    });
   };
 
 
@@ -72,6 +93,7 @@ function ClassesContent() {
         loading={loading}
         onPageChange={fetchClasses}
         onEdit={handleOpenEditModal}
+        onChangeStatus={handleOpenStatusModal}
       />
 
       <ClassFormModal
@@ -80,6 +102,14 @@ function ClassesContent() {
         onClose={() => setIsModalOpen(false)}
         onSubmitCreate={handleCreateClass}
         onSubmitUpdate={handleUpdateClass}
+      />
+
+      <ClassStatusConfirmModal
+        isOpen={isStatusModalOpen}
+        onClose={() => setIsStatusModalOpen(false)}
+        onConfirm={handleConfirmStatusChange}
+        cls={selectedClass}
+        action={statusAction}
       />
     </div>
   );

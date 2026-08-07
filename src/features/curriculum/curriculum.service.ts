@@ -7,6 +7,7 @@ import type {
   ClassResponse,
   CourseResponse,
   CourseSearchParams,
+  ChangeClassStatusRequest,
   CreateClassRequest,
   CreateCourseRequest,
   UpdateClassRequest,
@@ -111,6 +112,17 @@ export const curriculumService = {
   ): Promise<ApiResponse<ClassResponse>> {
     return apiClient.put<ApiResponse<ClassResponse>, UpdateClassRequest>(
       `${API_ROUTES.ADMIN.CLASSES}/${id}`,
+      payload,
+      authenticatedRequestOptions(),
+    );
+  },
+
+  changeClassStatus(
+    id: string,
+    payload: ChangeClassStatusRequest,
+  ): Promise<ApiResponse<ClassResponse>> {
+    return apiClient.put<ApiResponse<ClassResponse>, ChangeClassStatusRequest>(
+      `${API_ROUTES.ADMIN.CLASSES}/${id}/status`,
       payload,
       authenticatedRequestOptions(),
     );

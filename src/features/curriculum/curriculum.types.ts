@@ -49,6 +49,11 @@ export interface UpdateClassRequest {
   version: number;
 }
 
+export interface ChangeClassStatusRequest {
+  status: ClassStatus;
+  version: number;
+}
+
 export interface ClassResponse {
   id: string;
   courseId: string;

@@ -1,8 +1,14 @@
 import { useState, useCallback, useEffect } from "react";
 import { toast } from "sonner";
 import { curriculumService } from "../curriculum.service";
-import { CreateClassRequest, UpdateClassRequest, ClassResponse } from "../curriculum.types";
+import { CreateClassRequest, UpdateClassRequest, ChangeClassStatusRequest, ClassResponse } from "../curriculum.types";
 import { PageResponse } from "@/types/api";
+
+function requestErrorMessage(error: unknown, fallback: string): string {
+  return error instanceof Error && error.message
+    ? error.message
+    : fallback;
+}
 
 export function useClasses() {
   const [classes, setClasses] = useState<ClassResponse[]>([]);
@@ -46,8 +52,12 @@ export function useClasses() {
       await curriculumService.createClass(payload);
       toast.success("Lớp học đã được tạo thành công!");
       fetchClasses(0);
-    } catch (err) {
-      throw err;
+    } catch (requestError) {
+      toast.error(requestErrorMessage(
+        requestError,
+        "Đã xảy ra lỗi khi tạo lớp học",
+      ));
+      throw requestError;
     }
   };
 
@@ -56,8 +66,26 @@ export function useClasses() {
       await curriculumService.updateClass(id, payload);
       toast.success("Cập nhật lớp học thành công!");
       fetchClasses(pagination.page);
-    } catch (err) {
-      throw err;
+    } catch (requestError) {
+      toast.error(requestErrorMessage(
+        requestError,
+        "Đã xảy ra lỗi khi cập nhật lớp học",
+      ));
+      throw requestError;
+    }
+  };
+
+  const handleChangeStatus = async (id: string, payload: ChangeClassStatusRequest) => {
+    try {
+      await curriculumService.changeClassStatus(id, payload);
+      toast.success("Chuyển trạng thái lớp học thành công!");
+      fetchClasses(pagination.page);
+    } catch (requestError) {
+      toast.error(requestErrorMessage(
+        requestError,
+        "Đã xảy ra lỗi khi chuyển trạng thái lớp học",
+      ));
+      throw requestError;
     }
   };
 
@@ -69,5 +97,6 @@ export function useClasses() {
     fetchClasses,
     handleCreateClass,
     handleUpdateClass,
+    handleChangeStatus,
   };
 }
