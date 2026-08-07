@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  changePasswordSchema,
   loginSchema,
+  passwordResetConfirmSchema,
   registerSchema,
 } from "./auth.schema";
 
@@ -17,18 +19,15 @@ describe("loginSchema", () => {
   });
 
   it("rejects an invalid email", () => {
-    const result = loginSchema.safeParse({
+    expect(loginSchema.safeParse({
       email: "not-an-email",
       password: "Password@123",
-    });
-
-    expect(result.success).toBe(false);
+    }).success).toBe(false);
   });
 
   it("requires both credentials", () => {
-    const result = loginSchema.safeParse({ email: "", password: "" });
-
-    expect(result.success).toBe(false);
+    expect(loginSchema.safeParse({ email: "", password: "" }).success)
+      .toBe(false);
   });
 });
 
@@ -67,13 +66,43 @@ describe("registerSchema", () => {
     ["PASSWORD123", "missing a lowercase letter"],
     ["Pass1", "shorter than eight characters"],
   ])("rejects a password %s (%s)", (password) => {
-    const result = registerSchema.safeParse({
+    expect(registerSchema.safeParse({
       fullName: "Nguyen Van A",
       email: "student@example.com",
       password,
       confirmPassword: password,
+    }).success).toBe(false);
+  });
+});
+
+describe("changePasswordSchema", () => {
+  it("accepts a password that follows the shared account policy", () => {
+    expect(changePasswordSchema.safeParse({
+      currentPassword: "OldPassword123",
+      newPassword: "NewPassword123",
+      confirmPassword: "NewPassword123",
+    }).success).toBe(true);
+  });
+
+  it("rejects a new password that matches the current password", () => {
+    const result = changePasswordSchema.safeParse({
+      currentPassword: "SamePassword123",
+      newPassword: "SamePassword123",
+      confirmPassword: "SamePassword123",
     });
 
     expect(result.success).toBe(false);
+    expect(result.error?.issues).toContainEqual(expect.objectContaining({
+      path: ["newPassword"],
+    }));
+  });
+});
+
+describe("passwordResetConfirmSchema", () => {
+  it("uses the same password policy as registration", () => {
+    expect(passwordResetConfirmSchema.safeParse({
+      newPassword: "NewPassword123",
+      confirmPassword: "NewPassword123",
+    }).success).toBe(true);
   });
 });

@@ -7,11 +7,14 @@ import type { ApiResponse } from "@/types/api";
 
 import type {
   AccessTokenResponse,
+  ChangePasswordRequest,
   CurrentUserProfile,
   GoogleLoginCredentials,
   LoginCredentials,
+  PasswordResetConfirmRequest,
   RegisterCredentials,
 } from "./auth.types";
+import type { PasswordResetRequestFormValues } from "./auth.schema";
 
 function unwrap<T>(response: ApiResponse<T>): T {
   return response.data;
@@ -75,6 +78,29 @@ export const authApi = {
       accessToken,
       handleAuthenticationError: false,
     });
+  },
+
+  async requestPasswordReset(request: PasswordResetRequestFormValues): Promise<void> {
+    await apiClient.post(API_ROUTES.AUTH.PASSWORD_RESET_REQUEST, request, {
+      handleAuthenticationError: false,
+    });
+  },
+
+  async confirmPasswordReset(request: PasswordResetConfirmRequest): Promise<void> {
+    await apiClient.post(API_ROUTES.AUTH.PASSWORD_RESET, request, {
+      handleAuthenticationError: false,
+    });
+  },
+
+  async changePassword(
+    data: ChangePasswordRequest,
+    accessToken: string,
+  ): Promise<void> {
+    await apiClient.put<null, ChangePasswordRequest>(
+      API_ROUTES.PROFILE_PASSWORD,
+      data,
+      { accessToken },
+    );
   },
 };
 
