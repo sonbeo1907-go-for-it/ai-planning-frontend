@@ -1,9 +1,8 @@
 import { API_ROUTES } from "@/constants/api-routes";
 import { apiClient } from "@/lib/api-client";
 import { useAuthStore } from "@/features/auth/auth.store";
+import { UserRole } from "@/features/auth/auth.types";
 import {
-  CreateUserRequest,
-  UpdateUserRequest,
   UserSearchParam,
   UserDetailApiResponse,
   UsersApiResponse,
@@ -28,18 +27,18 @@ export const userService = {
     );
   },
 
-  createUser(payload: CreateUserRequest): Promise<UserDetailApiResponse> {
-    return apiClient.post<UserDetailApiResponse, CreateUserRequest>(
-      API_ROUTES.USERS,
-      payload,
+  updateUserRole(id: string, role: UserRole): Promise<UserDetailApiResponse> {
+    return apiClient.patch<UserDetailApiResponse, { role: UserRole }>(
+      `${API_ROUTES.USERS}/${id}/role`,
+      { role },
       authenticatedRequestOptions(),
     );
   },
 
-  updateUser(id: string, payload: UpdateUserRequest): Promise<UserDetailApiResponse> {
-    return apiClient.put<UserDetailApiResponse, UpdateUserRequest>(
-      `${API_ROUTES.USERS}/${id}`,
-      payload,
+  activateUser(id: string): Promise<UserDetailApiResponse> {
+    return apiClient.post<UserDetailApiResponse>(
+      `${API_ROUTES.USERS}/${id}/activate`,
+      undefined,
       authenticatedRequestOptions(),
     );
   },

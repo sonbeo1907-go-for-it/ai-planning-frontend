@@ -2,12 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { userService } from "../user.service";
-import {
-  CreateUserRequest,
-  UpdateUserRequest,
-  User,
-  UserSearchParam,
-} from "../user.types";
+import { User, UserSearchParam } from "../user.types";
+import { UserRole } from "@/features/auth/auth.types";
 import { PageResponse } from "@/types/pagination";
 import { ApiClientError } from "@/lib/api-client";
 
@@ -73,14 +69,14 @@ export function useUsers(initialParams?: UserSearchParam) {
     setParams((prev) => ({ ...prev, page }));
   };
 
-  const createUser = async (payload: CreateUserRequest) => {
-    const response = await userService.createUser(payload);
+  const updateUserRole = async (id: string, role: UserRole) => {
+    const response = await userService.updateUserRole(id, role);
     await fetchUsers();
     return response.data;
   };
 
-  const updateUser = async (id: string, payload: UpdateUserRequest) => {
-    const response = await userService.updateUser(id, payload);
+  const activateUser = async (id: string) => {
+    const response = await userService.activateUser(id);
     await fetchUsers();
     return response.data;
   };
@@ -102,8 +98,8 @@ export function useUsers(initialParams?: UserSearchParam) {
     handleRoleFilter,
     handleStatusFilter,
     handlePageChange,
-    createUser,
-    updateUser,
+    updateUserRole,
+    activateUser,
     deactivateUser,
   };
 }

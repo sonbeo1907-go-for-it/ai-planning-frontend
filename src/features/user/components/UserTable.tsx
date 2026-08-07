@@ -1,20 +1,16 @@
 "use client";
 
-import { Key } from "lucide-react";
-import { useState } from "react";
-
 import { User } from "../user.types";
 import { UserRole, AccountStatus } from "@/features/auth/auth.types";
-import { useAuthStore } from "@/features/auth";
 import { PageResponse } from "@/types/pagination";
-import { ResetPasswordModal } from "./ResetPasswordModal";
 
 interface UserTableProps {
   users: User[];
   pagination: PageResponse<User>;
   loading: boolean;
   onPageChange: (page: number) => void;
-  onEdit: (user: User) => void;
+  onChangeRole: (user: User) => void;
+  onActivate: (user: User) => void;
   onDeactivate: (user: User) => void;
 }
 
@@ -53,12 +49,10 @@ export function UserTable({
   pagination,
   loading,
   onPageChange,
-  onEdit,
+  onChangeRole,
+  onActivate,
   onDeactivate,
 }: UserTableProps) {
-  const profile = useAuthStore((state) => state.profile);
-  const [resetUser, setResetUser] = useState<User | null>(null);
-
   if (loading && users.length === 0) {
     return (
       <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-12 text-center">
@@ -81,7 +75,6 @@ export function UserTable({
   }
 
   return (
-    <>
     <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
@@ -105,6 +98,7 @@ export function UserTable({
                 label: user.status,
                 className: "bg-gray-100 text-gray-700",
               };
+              const isAdmin = user.role === "ADMIN";
 
               return (
                 <tr key={user.id} className="hover:bg-slate-50/80 transition">
@@ -135,34 +129,45 @@ export function UserTable({
                   </td>
                   <td className="py-3.5 px-4 text-right">
                     <div className="flex items-center justify-end gap-2">
-                      <button
-                        onClick={() => onEdit(user)}
-                        className="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition"
-                        title="Chỉnh sửa thông tin"
-                      >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
-                      </button>
-                      {profile?.role === "ADMIN" && (
+                      {/* Không cho đổi vai trò Admin */}
+                      {!isAdmin && (
                         <button
-                          onClick={() => setResetUser(user)}
-                          className="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition"
-                          title="Đặt lại mật khẩu"
-                        >
-                          <Key className="size-4" />
-                        </button>
-                      )}
-                      {user.status === "ACTIVE" && (
-                        <button
-                          onClick={() => onDeactivate(user)}
-                          className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-md transition"
-                          title="Vô hiệu hóa tài khoản"
+                          onClick={() => onChangeRole(user)}
+                          className="px-3 py-1.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 rounded-md text-xs font-medium transition flex items-center gap-1"
+                          title="Thay đổi vai trò"
                         >
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                           </svg>
+                          Đổi vai trò
                         </button>
+                      )}
+
+                      {/* Nút vô hiệu hóa / Kích hoạt mở khóa */}
+                      {!isAdmin && (
+                        user.status === "ACTIVE" ? (
+                          <button
+                            onClick={() => onDeactivate(user)}
+                            className="px-3 py-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-md text-xs font-medium transition flex items-center gap-1.5"
+                            title="Vô hiệu hóa tài khoản"
+                          >
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                            </svg>
+                            Vô hiệu hóa
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => onActivate(user)}
+                            className="px-3 py-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-md text-xs font-medium transition flex items-center gap-1.5"
+                            title="Mở khóa / Kích hoạt lại tài khoản"
+                          >
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Mở khóa
+                          </button>
+                        )
                       )}
                     </div>
                   </td>
@@ -199,17 +204,5 @@ export function UserTable({
         </div>
       </div>
     </div>
-
-    <ResetPasswordModal
-      isOpen={resetUser !== null}
-      onClose={() => setResetUser(null)}
-      user={resetUser ? {
-        id: resetUser.id,
-        name: resetUser.fullName,
-        email: resetUser.email,
-        status: resetUser.status,
-      } : null}
-    />
-    </>
   );
 }
