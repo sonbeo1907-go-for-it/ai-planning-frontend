@@ -80,7 +80,6 @@ export const createClassSchema = z.object({
   code: z.string().min(1, "Class code is required").max(100, "Code must be 100 characters or less"),
   name: z.string().min(1, "Class name is required").max(255, "Name must be 255 characters or less"),
   description: z.string().optional(),
-  status: z.enum(["PLANNED", "ACTIVE", "CLOSED"]),
 });
 
 export const updateClassSchema = z.object({

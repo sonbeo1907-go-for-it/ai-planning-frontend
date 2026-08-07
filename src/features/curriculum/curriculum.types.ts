@@ -76,7 +76,6 @@ export interface CreateClassRequest {
   code: string;
   name: string;
   description?: string;
-  status: ClassStatus;
 }
 
 export interface UpdateClassRequest {
