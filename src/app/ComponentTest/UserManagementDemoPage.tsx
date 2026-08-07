@@ -120,6 +120,14 @@ export function UserManagementDemoPage() {
     );
   };
 
+  const handleActivate = async (user: User) => {
+    setUsers(
+      users.map((item) => (
+        item.id === user.id ? { ...item, status: "ACTIVE" } : item
+      )),
+    );
+  };
+
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       <div className="bg-indigo-900 text-white p-4 rounded-xl shadow-md flex items-center justify-between">
@@ -129,6 +137,16 @@ export function UserManagementDemoPage() {
           </span>
           <h2 className="text-lg font-bold mt-1">Giao diện Quản lý Người Dùng US-ADM-01</h2>
         </div>
+        <button
+          type="button"
+          className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-indigo-900"
+          onClick={() => {
+            setSelectedUser(null);
+            setIsFormModalOpen(true);
+          }}
+        >
+          Tạo người dùng
+        </button>
       </div>
 
       <UserFilterBar
@@ -136,10 +154,6 @@ export function UserManagementDemoPage() {
         onSearchChange={setKeyword}
         onRoleChange={(nextRole) => setRole(nextRole ?? "")}
         onStatusChange={(nextStatus) => setStatus(nextStatus ?? "")}
-        onCreateClick={() => {
-          setSelectedUser(null);
-          setIsFormModalOpen(true);
-        }}
       />
 
       <UserTable
@@ -147,12 +161,13 @@ export function UserManagementDemoPage() {
         pagination={pagination}
         loading={false}
         onPageChange={setPage}
-        onEdit={(u) => {
-          setSelectedUser(u);
+        onChangeRole={(user) => {
+          setSelectedUser(user);
           setIsFormModalOpen(true);
         }}
-        onDeactivate={(u) => {
-          setUserToDeactivate(u);
+        onActivate={handleActivate}
+        onDeactivate={(user) => {
+          setUserToDeactivate(user);
           setIsDeactivateModalOpen(true);
         }}
       />

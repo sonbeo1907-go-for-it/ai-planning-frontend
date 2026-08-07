@@ -75,6 +75,11 @@ describe("ClassFormModal", () => {
     await waitFor(() => {
         expect(screen.getByRole("option", { name: "COURSE1 - Course 1" })).toBeInTheDocument();
     });
+    expect(curriculumService.getCourses).toHaveBeenCalledWith({
+      page: 0,
+      size: 100,
+      status: "ACTIVE",
+    });
 
     await user.selectOptions(screen.getByRole("combobox", { name: /Khóa học/i }), "123e4567-e89b-12d3-a456-426614174000");
     await user.type(screen.getByPlaceholderText("Ví dụ: JAV101-01"), "CLASS01");

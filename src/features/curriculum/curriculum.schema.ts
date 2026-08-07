@@ -1,12 +1,34 @@
 import { z } from "zod";
 
+const courseNameSchema = z
+  .string()
+  .trim()
+  .min(1, "Vui lòng nhập tên khóa học.")
+  .max(150, "Tên khóa học không được quá 150 ký tự.");
+
+const courseDescriptionSchema = z
+  .string()
+  .trim()
+  .max(4000, "Mô tả không được quá 4000 ký tự.")
+  .optional();
+
 export const createCourseSchema = z.object({
-  code: z.string().min(1, "Course code is required").max(100, "Code must be 100 characters or less"),
-  name: z.string().min(1, "Course name is required").max(255, "Name must be 255 characters or less"),
-  description: z.string().optional(),
-  status: z.enum(["ACTIVE", "INACTIVE"], {
-    required_error: "Status is required",
-  }),
+  code: z
+    .string()
+    .trim()
+    .min(1, "Vui lòng nhập mã khóa học.")
+    .max(50, "Mã khóa học không được quá 50 ký tự.")
+    .regex(
+      /^[A-Za-z0-9]+(?:_[A-Za-z0-9]+)*$/,
+      "Mã chỉ gồm chữ, số và dấu gạch dưới đơn.",
+    ),
+  name: courseNameSchema,
+  description: courseDescriptionSchema,
+});
+
+export const updateCourseSchema = z.object({
+  name: courseNameSchema,
+  description: courseDescriptionSchema,
 });
 
 export const createClassSchema = z.object({
@@ -14,9 +36,7 @@ export const createClassSchema = z.object({
   code: z.string().min(1, "Class code is required").max(100, "Code must be 100 characters or less"),
   name: z.string().min(1, "Class name is required").max(255, "Name must be 255 characters or less"),
   description: z.string().optional(),
-  status: z.enum(["PLANNED", "ACTIVE", "CLOSED"], {
-    required_error: "Status is required",
-  }),
+  status: z.enum(["PLANNED", "ACTIVE", "CLOSED"]),
 });
 
 export const updateClassSchema = z.object({

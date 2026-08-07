@@ -1,18 +1,24 @@
 "use client";
 
 import { useState } from "react";
+import { Plus } from "lucide-react";
+
+import { WarningPanel } from "@/components/planning";
+import { Button } from "@/components/ui";
+import { AuthenticatedShell } from "@/features/auth";
+import { CourseFilterBar } from "@/features/curriculum/components/CourseFilterBar";
 import { CourseFormModal } from "@/features/curriculum/components/CourseFormModal";
 import { CourseListTable } from "@/features/curriculum/components/CourseListTable";
+import { CourseStatusModal } from "@/features/curriculum/components/CourseStatusModal";
 import { useCourses } from "@/features/curriculum/hooks/useCourses";
-import { AuthenticatedShell } from "@/features/auth";
-import { toast } from "sonner";
+import type { CourseResponse } from "@/features/curriculum/curriculum.types";
 
 export default function CoursesPage() {
   return (
     <AuthenticatedShell
       allowedRoles={["ADMIN"]}
-      title="Quản lý Khóa học"
-      description="Quản lý danh mục các khóa học trong hệ thống."
+      title="Quản lý khóa học"
+      description="Tạo, cập nhật và kiểm soát trạng thái các chương trình đào tạo."
     >
       <CoursesContent />
     </AuthenticatedShell>
@@ -20,54 +26,73 @@ export default function CoursesPage() {
 }
 
 function CoursesContent() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  
-  const {
-    courses,
-    loading,
-    error,
-    pagination,
-    fetchCourses,
-    handleCreateCourse,
-  } = useCourses();
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingCourse, setEditingCourse] = useState<CourseResponse | null>(null);
+  const [statusCourse, setStatusCourse] = useState<CourseResponse | null>(null);
+  const coursesState = useCourses();
+
+  function openCreateForm() {
+    setEditingCourse(null);
+    setIsFormOpen(true);
+  }
+
+  function openEditForm(course: CourseResponse) {
+    setEditingCourse(course);
+    setIsFormOpen(true);
+  }
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6">
-      {error && (
-        <div className="p-4 bg-rose-50 border border-rose-200 text-rose-700 text-sm rounded-xl flex items-center gap-2">
-          <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span>{error}</span>
-        </div>
-      )}
-
-      <div className="flex items-center justify-end">
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition"
-        >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          Tạo Khóa học
-        </button>
+    <div className="mx-auto grid max-w-7xl gap-5">
+      <div className="flex justify-end">
+        <Button onClick={openCreateForm}>
+          <Plus className="size-4" aria-hidden="true" />
+          Tạo khóa học
+        </Button>
       </div>
 
+      <CourseFilterBar
+        params={coursesState.params}
+        disabled={coursesState.loading}
+        onSearch={coursesState.handleSearch}
+        onStatusChange={coursesState.handleStatusFilter}
+      />
+
+      {coursesState.error && (
+        <WarningPanel tone="error" title="Không thể tải khóa học">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <span>{coursesState.error}</span>
+            <Button
+              variant="secondary"
+              className="shrink-0"
+              onClick={() => void coursesState.refetch()}
+            >
+              Thử lại
+            </Button>
+          </div>
+        </WarningPanel>
+      )}
+
       <CourseListTable
-        courses={courses}
-        pagination={pagination}
-        loading={loading}
-        onPageChange={fetchCourses}
-        onEdit={(course) => {
-          toast.info(`Tính năng chỉnh sửa khóa học ${course.code} sẽ được phát triển ở các User Story tiếp theo.`);
-        }}
+        courses={coursesState.courses}
+        pagination={coursesState.pagination}
+        loading={coursesState.loading}
+        onPageChange={coursesState.handlePageChange}
+        onEdit={openEditForm}
+        onStatusChange={setStatusCourse}
       />
 
       <CourseFormModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmitCreate={handleCreateCourse}
+        isOpen={isFormOpen}
+        course={editingCourse}
+        onClose={() => setIsFormOpen(false)}
+        onSubmitCreate={coursesState.createCourse}
+        onSubmitUpdate={coursesState.updateCourse}
+      />
+
+      <CourseStatusModal
+        course={statusCourse}
+        onClose={() => setStatusCourse(null)}
+        onConfirm={coursesState.changeCourseStatus}
       />
     </div>
   );

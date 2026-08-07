@@ -26,7 +26,7 @@ export function useClasses() {
       const response = await curriculumService.getClasses(page, pagination.size, ["createdAt,desc"]);
       setClasses(response.data.content);
       setPagination(response.data);
-    } catch (err) {
+    } catch {
       const msg = "Không thể tải danh sách lớp học";
       setError(msg);
       toast.error(msg);
@@ -36,7 +36,9 @@ export function useClasses() {
   }, [pagination.size]);
 
   useEffect(() => {
-    fetchClasses(0);
+    // The request lifecycle intentionally updates loading/data state.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void fetchClasses(0);
   }, [fetchClasses]);
 
   const handleCreateClass = async (payload: CreateClassRequest) => {

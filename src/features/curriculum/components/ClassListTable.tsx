@@ -2,8 +2,17 @@
 
 import { ClassResponse } from "../curriculum.types";
 import { PageResponse } from "@/types/api";
-import { format } from "date-fns";
-import { vi } from "date-fns/locale";
+
+function formatDate(value: string): string {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return "N/A";
+  }
+
+  return new Intl.DateTimeFormat("vi-VN", {
+    dateStyle: "short",
+  }).format(date);
+}
 
 interface ClassListTableProps {
   classes: ClassResponse[];
@@ -90,8 +99,8 @@ export function ClassListTable({
                     </span>
                   </td>
                   <td className="py-3.5 px-4 text-slate-500 text-xs">
-                    <div>Mở: {cls.openedAt ? format(new Date(cls.openedAt), "dd/MM/yyyy", { locale: vi }) : "N/A"}</div>
-                    <div>Đóng: {cls.closedAt ? format(new Date(cls.closedAt), "dd/MM/yyyy", { locale: vi }) : "N/A"}</div>
+                    <div>Mở: {cls.openedAt ? formatDate(cls.openedAt) : "N/A"}</div>
+                    <div>Đóng: {cls.closedAt ? formatDate(cls.closedAt) : "N/A"}</div>
                   </td>
                   <td className="py-3.5 px-4 text-right">
                     <div className="flex items-center justify-end gap-2">

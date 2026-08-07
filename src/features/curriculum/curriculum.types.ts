@@ -6,19 +6,31 @@ export interface CreateCourseRequest {
   code: string;
   name: string;
   description?: string;
-  status: CourseStatus;
+}
+
+export interface UpdateCourseRequest {
+  name: string;
+  description?: string;
+}
+
+export interface CourseSearchParams {
+  search?: string;
+  status?: CourseStatus;
+  page?: number;
+  size?: number;
 }
 
 export interface CourseResponse {
   id: string;
   code: string;
   name: string;
-  description?: string;
+  description: string | null;
   status: CourseStatus;
   createdAt: string;
   updatedAt: string;
-  createdBy?: string;
-  updatedBy?: string;
+  createdBy: string;
+  updatedBy: string;
+  version: number;
 }
 
 export interface CreateClassRequest {
